@@ -2,16 +2,16 @@
 
 Store `Int`-based enums inside of a 2D `Collection` structure. The library defines three types:
 
-1. `GridTile`
+1. `GridElement`
 2. `GridCollection`
-3. `Grid<T: GridTile>`
+3. `Grid<T: GridElement>`
 
-### `GridTile`
+### `GridElement`
 
-A `Grid<T>` holds `T`, where `T` must adopt `GridTile`. As an example, imagine defining tiles for a maze:
+A `Grid<T>` holds `T`, where `T` must adopt `GridElement`. As an example, imagine defining tiles for a maze:
 
 ```swift
-enum MazeTile: Int, GridTile {
+enum MazeTile: Int, GridElement {
     static let empty: MazeTile = .open
     static func random() -> MazeTile {
         return MazeTile(rawValue: Int(arc4random_uniform(2)))!
