@@ -1,6 +1,6 @@
 // Grid<T>
 //------------------------------------------------------------------------------
-public struct Grid<T: Codable>: GridCollection where T: GridTile {
+public struct Grid<T: GridElement>: GridCollection where T: Codable {
     // Private
     //--------------------------------------------------------------------------
     private var values: Array<T>
