@@ -1,28 +1,21 @@
 // Grid<T>
 //------------------------------------------------------------------------------
-public struct Grid<T: GridElement>: GridCollection where T: Codable {
+public struct Grid<Element>: GridCollection {
     // Private
     //--------------------------------------------------------------------------
-    private var values: Array<T>
+    private var values: Array<Element>
     
-    // GridCollection
+    // Public
     //--------------------------------------------------------------------------
-    public typealias Tile = T
-    
     public var width:  Int
     public var height: Int
     
     // Init
     //--------------------------------------------------------------------------
-    public init<S: Sequence>(width: Int, height: Int, values: S) throws where S.Element == T.RawValue, S: ExpressibleByArrayLiteral {
-        let array = Array(values).flatMap { T(rawValue: $0) }
-        guard array.count == width * height else {
-            throw InitError.invalidValues
-        }
-        
+    public init<S: Sequence>(width: Int, height: Int, values: S) where S.Element == Element {
         self.width  = width
         self.height = height
-        self.values = array
+        self.values = Array(values)
     }
     
     // Collection
@@ -36,21 +29,28 @@ public struct Grid<T: GridElement>: GridCollection where T: Codable {
     
     // Subscripts
     //--------------------------------------------------------------------------
-    public subscript(index: Int) -> T {
+    public subscript(index: Int) -> Element {
         return values[index]
     }
     
-    public subscript(row: Int, col: Int) -> T {
+    public subscript(row: Int, col: Int) -> Element {
         get { return values[(row * height) + col] }
         set { values[(row * height) + col] = newValue }
     }
 }
 
-// Grid<T> (Errors)
-//--------------------------------------------------------------------------
-extension Grid {
-    // Init
-    public enum InitError: Error {
-        case invalidValues
+// Grid<T> (RawRepresentable)
+//------------------------------------------------------------------------------
+extension Grid where Element: RawRepresentable {
+    public init?<S: Sequence>(width: Int, height: Int, values: S) where S.Element == Element.RawValue {
+        let array = Array(values).flatMap { Element(rawValue: $0) }
+        guard array.count == width * height else {
+            return nil
+        }
+
+        self.values = array
+        self.width  = width
+        self.height = height
     }
 }
+
